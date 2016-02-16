@@ -280,38 +280,39 @@ class PInputVideoStreamFFmpeg: public PInputVideoStreamInterface
         bool                       m_loop;
 };
 
-
-void OnLoad(PResult& ret)
+namespace papillon
 {
-    ret = PResult::C_OK;
-}
-
-
-void OnUnload(PResult& ret)
-{
-    ret = PResult::C_OK;
-}
-
-
-void About(PString& productName, PVersion& productVersion, PGuid& productGuid, PString& briefDescription)
-{
-    productName = PRODUCT_NAME;
-    productVersion = PVersion(PRODUCT_VERSION);
-    productGuid = PRODUCT_GUID;
-    briefDescription = "Read a video stream from file (H264)";
-}
-
-
-void CreateInputVideoStreamImpl(const PUri& uri, PInputVideoStreamInterface** inputVideoStreamImpl, PResult& ret)
-{
-    P_LOG_DEBUG<<PRODUCT_NAME << ": try to open video stream using " << PRODUCT_NAME << " v" << PRODUCT_VERSION << ", source is \"" << uri << "\"";
-
-    if (!uri.IsValid())
+    void OnLoad(PResult& ret)
     {
-        ret = PResult::ErrorBadURIFormat(PString("unexpected URI scheme (should be 'file'): \"%1\"").Arg(uri.ToString()));
-        return;
+        ret = PResult::C_OK;
     }
-    *inputVideoStreamImpl = new PInputVideoStreamFFmpeg(uri);
-    ret = PResult::C_OK;
-}
 
+
+    void OnUnload(PResult& ret)
+    {
+        ret = PResult::C_OK;
+    }
+
+
+    void About(PString& productName, PVersion& productVersion, PGuid& productGuid, PString& briefDescription)
+    {
+        productName = PRODUCT_NAME;
+        productVersion = PVersion(PRODUCT_VERSION);
+        productGuid = PRODUCT_GUID;
+        briefDescription = "Read a video stream from file (H264)";
+    }
+
+
+    void CreateInputVideoStreamImpl(const PUri& uri, PInputVideoStreamInterface** inputVideoStreamImpl, PResult& ret)
+    {
+        P_LOG_DEBUG<<PRODUCT_NAME << ": try to open video stream using " << PRODUCT_NAME << " v" << PRODUCT_VERSION << ", source is \"" << uri << "\"";
+
+        if (!uri.IsValid())
+        {
+            ret = PResult::ErrorBadURIFormat(PString("unexpected URI scheme (should be 'file'): \"%1\"").Arg(uri.ToString()));
+            return;
+        }
+        *inputVideoStreamImpl = new PInputVideoStreamFFmpeg(uri);
+        ret = PResult::C_OK;
+    }
+}

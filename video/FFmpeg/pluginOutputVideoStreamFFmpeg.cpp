@@ -157,36 +157,38 @@ private:
     PFFmpegOutputStreamHandler* m_encoder;
 };
 
-
-void OnLoad(PResult& ret)
+namespace papillon
 {
-    ret = PResult::C_OK;
-}
-
-
-void OnUnload(PResult& ret)
-{
-    ret = PResult::C_OK;
-}
-
-
-void About(PString& productName, PVersion& productVersion, PGuid& productGuid, PString& briefDescription)
-{
-    productName      = PRODUCT_NAME;
-    productVersion   = PVersion(PRODUCT_VERSION);
-    productGuid      = PRODUCT_GUID;
-    briefDescription = "Write H.264 video stream to file or an RTSP stream";
-}
-
-
-void CreateOutputVideoStreamImpl(const PUri& uri, POutputVideoStreamInterface** outputVideoStreamImpl, PResult& ret)
-{
-    P_LOG_DEBUG << PRODUCT_NAME << ": try to open video stream using " << PRODUCT_NAME << " v" << PRODUCT_VERSION << ", source is \"" << uri << "\"";
-    if (!uri.IsValid())
+    void OnLoad(PResult& ret)
     {
-        ret = PResult::ErrorBadURIFormat(PString("Invalid URI scheme: \"%1\"").Arg(uri.ToString()));
-        return;
+        ret = PResult::C_OK;
     }
-    *outputVideoStreamImpl = new POutputVideoStreamFFmpeg(uri);
-    ret = PResult::C_OK;
+
+
+    void OnUnload(PResult& ret)
+    {
+        ret = PResult::C_OK;
+    }
+
+
+    void About(PString& productName, PVersion& productVersion, PGuid& productGuid, PString& briefDescription)
+    {
+        productName      = PRODUCT_NAME;
+        productVersion   = PVersion(PRODUCT_VERSION);
+        productGuid      = PRODUCT_GUID;
+        briefDescription = "Write H.264 video stream to file or an RTSP stream";
+    }
+
+
+    void CreateOutputVideoStreamImpl(const PUri& uri, POutputVideoStreamInterface** outputVideoStreamImpl, PResult& ret)
+    {
+        P_LOG_DEBUG << PRODUCT_NAME << ": try to open video stream using " << PRODUCT_NAME << " v" << PRODUCT_VERSION << ", source is \"" << uri << "\"";
+        if (!uri.IsValid())
+        {
+            ret = PResult::ErrorBadURIFormat(PString("Invalid URI scheme: \"%1\"").Arg(uri.ToString()));
+            return;
+        }
+        *outputVideoStreamImpl = new POutputVideoStreamFFmpeg(uri);
+        ret = PResult::C_OK;
+    }
 }
