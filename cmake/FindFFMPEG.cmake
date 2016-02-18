@@ -21,10 +21,9 @@
 if (FFMPEG_LIBRARIES AND FFMPEG_INCLUDE_DIR)
   # in cache already
   set(FFMPEG_FOUND TRUE)
-
 else (FFMPEG_LIBRARIES AND FFMPEG_INCLUDE_DIR)
   # Look for FFmpeg in the standard paths using pkg-config only if we don't have one in externals
-  if ("$FFMPEG_ROOT" STREQUAL "")
+  if ("${FFMPEG_ROOT}" STREQUAL "")
     # use pkg-config to get the directories and then use these values
     # in the FIND_PATH() and FIND_LIBRARY() calls
     find_package(PkgConfig)
@@ -42,7 +41,7 @@ else (FFMPEG_LIBRARIES AND FFMPEG_INCLUDE_DIR)
   # Find include directory root
   find_path(FFMPEG_AVCODEC_INCLUDE_DIR
     NAMES libavcodec/avcodec.h
-    PATHS $FFMPEG_ROOT/include ${_FFMPEG_AVCODEC_INCLUDE_DIRS} /usr/include /usr/include/ffmpeg /usr/local/include /opt/local/include /sw/include
+    PATHS ${FFMPEG_ROOT}/include ${_FFMPEG_AVCODEC_INCLUDE_DIRS} /usr/include /usr/local/include /opt/local/include /sw/include
     PATH_SUFFIXES ffmpeg libav
     ${SEARCH_PARAMETERS}
   )
@@ -50,25 +49,25 @@ else (FFMPEG_LIBRARIES AND FFMPEG_INCLUDE_DIR)
   # Find libraries
   find_library(FFMPEG_LIBAVCODEC
     NAMES avcodec
-    PATHS $FFMPEG_ROOT/lib ${_FFMPEG_AVCODEC_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
+    PATHS ${FFMPEG_ROOT}/lib ${_FFMPEG_AVCODEC_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
     ${SEARCH_PARAMETERS}
   )
 
   find_library(FFMPEG_LIBAVFORMAT
     NAMES avformat
-    PATHS $FFMPEG_ROOT/lib ${_FFMPEG_AVFORMAT_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
+    PATHS ${FFMPEG_ROOT}/lib ${_FFMPEG_AVFORMAT_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
     ${SEARCH_PARAMETERS}
   )
 
   find_library(FFMPEG_LIBAVUTIL
     NAMES avutil
-    PATHS $FFMPEG_ROOT/lib ${_FFMPEG_AVUTIL_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
+    PATHS ${FFMPEG_ROOT}/lib ${_FFMPEG_AVUTIL_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
     ${SEARCH_PARAMETERS}
   )
 
   find_library(FFMPEG_SWSCALE
     NAMES swscale
-    PATHS $FFMPEG_ROOT/lib ${_FFMPEG_SWSCALE_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
+    PATHS ${FFMPEG_ROOT}/lib ${_FFMPEG_SWSCALE_LIBRARY_DIRS} /usr/lib /usr/local/lib /opt/local/lib /sw/lib
     ${SEARCH_PARAMETERS}
   )
 
