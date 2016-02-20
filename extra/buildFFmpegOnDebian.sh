@@ -1,15 +1,15 @@
-#!bash
+#!/bin/bash
 
 #This file is just extract from https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu
 #define some options here
 BUILD_YASM=0
 BUILD_LIBX264=0
 BUILD_LIBLAME=0
-BUILD_LIBOPUS=1
+BUILD_LIBOPUS=0
 
-FFMPEG_FILE ffmpeg-3.0.tar.bz2
+FFMPEG_FILE=ffmpeg-3.0.tar.bz2
 
-###Get the Dependencies ¶
+###Get the Dependencies
 #Copy and paste the whole code box for each step. First install the dependencies:
 
 sudo apt-get update
@@ -40,7 +40,7 @@ mkdir ~/ffmpeg_sources
 
 #If your repository offers a yasm package = 1.2.0 then you can install that instead of compiling:
 
-if [ $BUIDL_YASM == 0 ]; then
+if [ $BUILD_YASM == 0 ]; then
     sudo apt-get install yasm
 else
     cd ~/ffmpeg_sources
@@ -61,7 +61,7 @@ fi
 
 #If your repository offers a libx264-dev package = 0.118 then you can install that instead of compiling:
 
-if [ $BUIDL_LIBX264 == 0 ]; then
+if [ $BUILD_LIBX264 == 0 ]; then
     sudo apt-get install libx264-dev
 else
     cd ~/ffmpeg_sources
@@ -114,7 +114,7 @@ make distclean
 
 #If your repository offers a libmp3lame-dev package = 3.98.3 then you can install that instead of compiling:
 
-if [ $BUIDL_LIBLAME == 0 ]; then
+if [ $BUILD_LIBLAME == 0 ]; then
     sudo apt-get install libmp3lame-dev
 else
     sudo apt-get install nasm
@@ -137,7 +137,7 @@ fi
 
 #If your repository offers a libopus-dev package = 1.1 then you can install that instead of compiling:
 
-if [ $BUIDL_LIBOPUS == 0 ]; then
+if [ $BUILD_LIBOPUS == 0 ]; then
     sudo apt-get install libopus-dev
 else
     cd ~/ffmpeg_sources
@@ -174,7 +174,7 @@ make clean
 cd ~/ffmpeg_sources
 wget http://ffmpeg.org/releases/${FFMPEG_FILE}
 tar xjvf ${FFMPEG_FILE}
-cd ffmpeg
+cd ffmpeg-3.0
 PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./configure \
   --prefix="$HOME/ffmpeg_build" \
   --pkg-config-flags="--static" \
@@ -192,7 +192,7 @@ PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./conf
   --enable-libvpx \
   --enable-libx264 \
   --enable-libx265 \
-  --enable-nonfree
+  --enable-nonfree \
   --enable-pic
 PATH="$HOME/bin:$PATH" make -j 8
 make install
