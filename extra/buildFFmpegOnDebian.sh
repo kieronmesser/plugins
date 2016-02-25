@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+set -x
+
 #This file is just extract from https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu
 #define some options here
 BUILD_YASM=0
@@ -20,7 +23,9 @@ sudo apt-get -y --force-yes install autoconf automake build-essential libass-dev
 #libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev.
 #Now make a directory for the source files that will be downloaded later in this guide:
 
-mkdir ~/ffmpeg_sources
+rm -rf ~/ffmpeg_sources
+rm -rf ~/ffmpeg_build
+mkdir -p ~/ffmpeg_sources
 
 ###Compilation & Installation
 #You can compile ffmpeg to your liking. If you do not require certain encoders you may skip the relevant
@@ -41,7 +46,7 @@ mkdir ~/ffmpeg_sources
 #If your repository offers a yasm package = 1.2.0 then you can install that instead of compiling:
 
 if [ $BUILD_YASM == 0 ]; then
-    sudo apt-get install yasm
+    sudo apt-get -y install yasm
 else
     cd ~/ffmpeg_sources
     wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
@@ -62,7 +67,7 @@ fi
 #If your repository offers a libx264-dev package = 0.118 then you can install that instead of compiling:
 
 if [ $BUILD_LIBX264 == 0 ]; then
-    sudo apt-get install libx264-dev
+    sudo apt-get -y install libx264-dev
 else
     cd ~/ffmpeg_sources
     wget http://download.videolan.org/pub/x264/snapshots/last_x264.tar.bz2
@@ -86,7 +91,7 @@ cd ~/ffmpeg_sources/x265/build/linux
 PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DENABLE_SHARED:bool=off ../../source
 make -j 8
 make install
-make distclean
+#make distclean
 
 
 ###libfdk-aac
@@ -161,10 +166,13 @@ cd ~/ffmpeg_sources
 wget http://storage.googleapis.com/downloads.webmproject.org/releases/webm/libvpx-1.5.0.tar.bz2
 tar xjvf libvpx-1.5.0.tar.bz2
 cd libvpx-1.5.0
-PATH="$HOME/bin:$PATH" ./configure --prefix="$HOME/ffmpeg_build" --disable-examples --disable-unit-tests
-PATH="$HOME/bin:$PATH" make
+PATH="$HOME/bin:$PATH" ./configure --prefix="$HOME/ffmpeg_build"\
+  --disable-examples \
+  --disable-unit-tests \
+  --enable-pic
+PATH="$HOME/bin:$PATH" make -j 8
 make install
-make clean
+make distclean
 
 
 
@@ -193,7 +201,10 @@ PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./conf
   --enable-libx264 \
   --enable-libx265 \
   --enable-nonfree \
-  --enable-pic
+  --enable-pic \
+  --disable-static \
+  --enable-shared \
+
 PATH="$HOME/bin:$PATH" make -j 8
 make install
 make distclean
