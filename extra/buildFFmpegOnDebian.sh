@@ -34,9 +34,9 @@ mkdir -p ~/ffmpeg_sources
 
 #This guide is designed to be non-intrusive and will create several directories in your home directory:
 
-#ffmpeg_sources – Where the source files will be downloaded.
-#ffmpeg_build – Where the files will be built and libraries installed.
-#bin – Where the resulting binaries (ffmpeg, ffplay, ffserver, x264, and yasm) will be installed.
+#ffmpeg_sources - Where the source files will be downloaded.
+#ffmpeg_build - Where the files will be built and libraries installed.
+#bin - Where the resulting binaries (ffmpeg, ffplay, ffserver, x264, and yasm) will be installed.
 #You can easily undo any of this as shown in Reverting Changes Made by This Guide.
 
 ###Yasm
@@ -45,7 +45,7 @@ mkdir -p ~/ffmpeg_sources
 
 #If your repository offers a yasm package = 1.2.0 then you can install that instead of compiling:
 
-if [ $BUILD_YASM == 0 ]; then
+if [ $BUILD_YASM = "0" ]; then
     sudo apt-get -y install yasm
 else
     cd ~/ffmpeg_sources
@@ -66,7 +66,7 @@ fi
 
 #If your repository offers a libx264-dev package = 0.118 then you can install that instead of compiling:
 
-if [ $BUILD_LIBX264 == 0 ]; then
+if [ $BUILD_LIBX264 = "0" ]; then
     sudo apt-get -y install libx264-dev
 else
     cd ~/ffmpeg_sources
@@ -119,7 +119,7 @@ make distclean
 
 #If your repository offers a libmp3lame-dev package = 3.98.3 then you can install that instead of compiling:
 
-if [ $BUILD_LIBLAME == 0 ]; then
+if [ $BUILD_LIBLAME = "0" ]; then
     sudo apt-get -y install libmp3lame-dev
 else
     sudo apt-get -y install nasm
@@ -142,7 +142,7 @@ fi
 
 #If your repository offers a libopus-dev package = 1.1 then you can install that instead of compiling:
 
-if [ $BUILD_LIBOPUS == 0 ]; then
+if [ $BUILD_LIBOPUS = "0" ]; then
     sudo apt-get -y install libopus-dev
 else
     cd ~/ffmpeg_sources
