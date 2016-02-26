@@ -27,8 +27,7 @@ include_directories(${PAPILLON_INCLUDE_DIRS} ${FFMPEG_INCLUDE_DIR})
 target_link_libraries(PPluginInputVideoStreamFFmpeg ${PAPILLON_LIBRARIES} ${FFMPEG_LIBRARIES} ${MY_LINKER_FLAGS})
 
 # Copy plugin to specific output directory when compiled
-papillon_copy_target_binary(PPluginInputVideoStreamFFmpeg ${PAPILLON_INSTALL_DIR}/plugins/)
-install(TARGETS PPluginInputVideoStreamFFmpeg RUNTIME DESTINATION plugins LIBRARY DESTINATION plugins)
+install(TARGETS PPluginInputVideoStreamFFmpeg RUNTIME DESTINATION plugins LIBRARY DESTINATION ${PAPILLON_INSTALL_DIR}/plugins)
 
 
 ######## Output
@@ -41,6 +40,5 @@ add_library(PPluginOutputVideoStreamFFmpeg   SHARED
 target_link_libraries(PPluginOutputVideoStreamFFmpeg ${PAPILLON_LIBRARIES} ${FFMPEG_LIBRARIES} ${MY_LINKER_FLAGS})
 
 # Copy plugin to specific output directory when compiled
-papillon_copy_target_binary(PPluginOutputVideoStreamFFmpeg ${PAPILLON_INSTALL_DIR}/plugins/)
-install(TARGETS PPluginOutputVideoStreamFFmpeg RUNTIME DESTINATION plugins LIBRARY DESTINATION plugins)
+install(TARGETS PPluginOutputVideoStreamFFmpeg RUNTIME DESTINATION plugins LIBRARY DESTINATION ${PAPILLON_INSTALL_DIR}/plugins)
 
