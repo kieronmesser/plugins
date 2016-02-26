@@ -120,9 +120,9 @@ make distclean
 #If your repository offers a libmp3lame-dev package = 3.98.3 then you can install that instead of compiling:
 
 if [ $BUILD_LIBLAME == 0 ]; then
-    sudo apt-get install libmp3lame-dev
+    sudo apt-get -y install libmp3lame-dev
 else
-    sudo apt-get install nasm
+    sudo apt-get -y install nasm
     cd ~/ffmpeg_sources
     wget http://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
     tar xzvf lame-3.99.5.tar.gz
@@ -143,7 +143,7 @@ fi
 #If your repository offers a libopus-dev package = 1.1 then you can install that instead of compiling:
 
 if [ $BUILD_LIBOPUS == 0 ]; then
-    sudo apt-get install libopus-dev
+    sudo apt-get -y install libopus-dev
 else
     cd ~/ffmpeg_sources
     wget http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz
