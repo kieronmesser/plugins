@@ -84,7 +84,7 @@ fi
 
 #H.265/HEVC video encoder. See the H.265 Encoding Guide for more information and usage examples.
 
-sudo apt-get install cmake mercurial
+sudo apt-get -y install cmake mercurial
 cd ~/ffmpeg_sources
 hg clone https://bitbucket.org/multicoreware/x265
 cd ~/ffmpeg_sources/x265/build/linux
