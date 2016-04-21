@@ -265,7 +265,7 @@ class PInputVideoStreamFFmpeg: public PInputVideoStreamInterface
                 {
                     P_LOG_WARNING << "Cannot seek beyond the end of video file, seeking to the last second..";
                     // TODO Clamp or return error? At the end we're returning something not requested
-                    PMath::Clamp(timeToSeek, 0, m_streamHandler->GetDuration());
+                    PMath::Clamp(timeToSeek, 0.0, (double)m_streamHandler->GetDuration());
                 }
 
                 return m_streamHandler->SeekToFrame(timeToSeek);
