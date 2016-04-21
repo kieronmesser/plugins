@@ -22,7 +22,7 @@ set +e
 sudo yum -y install http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
 set -e
 
-sudo yum install libass-devel freetype-devel SDL-devel libtheora-devel libtool libva-devel libvdpau-devel libvorbis-devel libxcb-devel texinfo zlib-devel
+sudo yum install libass-devel freetype-devel SDL-devel libtheora-devel libtool libva-devel libvdpau-devel libvorbis-devel libxcb-devel texinfo zlib-devel wget
 
 #Now make a directory for the source files that will be downloaded later in this guide:
 
