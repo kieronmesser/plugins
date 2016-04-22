@@ -148,7 +148,7 @@ fi
 #If your repository offers a libopus-dev package = 1.1 then you can install that instead of compiling:
 
 if [ $BUILD_LIBOPUS = "0" ]; then
-    sudo apt-get -y install opus-dev
+    sudo yum -y install opus-devel
 else
     cd ~/ffmpeg_sources
     wget http://downloads.xiph.org/releases/opus/opus-1.1.tar.gz
