@@ -31,7 +31,6 @@ install(TARGETS PPluginInputVideoStreamFFmpeg RUNTIME DESTINATION plugins LIBRAR
 
 
 ######## Output
-
 add_library(PPluginOutputVideoStreamFFmpeg   SHARED
     pluginOutputVideoStreamFFmpeg.cpp
 )

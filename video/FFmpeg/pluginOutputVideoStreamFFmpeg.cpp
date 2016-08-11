@@ -13,7 +13,7 @@
 #include <PPluginInterface.h>
 #include <POutputVideoStreamInterface.h>
 
-#include "PFFmpegOutputStreamHandler.h"
+#include "wrapper/PFFmpegOutputStreamHandler.h"
 
 const PString PRODUCT_NAME         = "FFmpegOutputVideoStream";
 const PString PRODUCT_VERSION      = "1.0";

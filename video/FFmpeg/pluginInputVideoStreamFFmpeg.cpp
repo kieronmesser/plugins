@@ -12,7 +12,7 @@
 #include <PapillonCore.h>
 #include <PPluginInterface.h>
 
-#include "PFFmpegInputStreamHandler.h"
+#include "wrapper/PFFmpegInputStreamHandler.h"
 
 const PString PRODUCT_NAME = "FFmpegInputVideoStream";
 const PString PRODUCT_VERSION = "1.0";
