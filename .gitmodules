@@ -1,0 +1,3 @@
+[submodule "video/FFmpeg"]
+	path = video/FFmpeg
+	url = git@github.com:videoai/ffmpeg.git
