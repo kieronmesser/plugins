@@ -11,7 +11,7 @@
 #ifndef SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGOUTPUTSTREAMHANDLER_H_
 #define SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGOUTPUTSTREAMHANDLER_H_
 
-#include <PFFmpegStreamHandler.h>
+#include "PFFmpegStreamHandler.h"
 
 /**
  * @file PFFmpegOutputStreamHandler.h

@@ -11,8 +11,7 @@
 #define PAPILLON_EXPORT_CORE_PLUGIN
 #include <PapillonCore.h>
 #include <PPluginInterface.h>
-
-#include <PFFmpegInputStreamHandler.h>
+#include "wrapper/PFFmpegInputStreamHandler.h"
 
 namespace papillon
 {

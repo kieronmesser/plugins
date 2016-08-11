@@ -13,7 +13,7 @@
 #include <PPluginInterface.h>
 #include <POutputVideoStreamInterface.h>
 
-#include <PFFmpegOutputStreamHandler.h>
+#include "wrapper/PFFmpegOutputStreamHandler.h"
 
 namespace papillon
 {
