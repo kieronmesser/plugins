@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Digital Barriers plc. All rights reserved.
+ * Copyright (C) 2016 Digital Barriers plc. All rights reserved.
  * Contact: http://www.digitalbarriers.com/
  *
  * This file is part of the Papillon SDK.
