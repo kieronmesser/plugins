@@ -1,16 +1,21 @@
 /*
  * Copyright (C) 2015 Digital Barriers plc. All rights reserved.
  * Contact: http://www.digitalbarriers.com/
+ *
+ * This file is part of the Papillon SDK.
+ *
+ * You can't use, modify or distribute any part of this file without
+ * the explicit written agreements of Digital Barriers plc.
  */
 
-#ifndef FFMPEG_PFFMPEGSTREAMHANDLER_H_
-#define FFMPEG_PFFMPEGSTREAMHANDLER_H_
+#ifndef SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGSTREAMHANDLER_H_
+#define SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGSTREAMHANDLER_H_
 
 #include <PByteStream.h>
 #include <PResult.h>
 #include <PGuid.h>
 #include <PLog.h>
-#include "PFFmpegUtility.h"
+#include <PFFmpegUtility.h>
 using namespace papillon;
 
 /**
@@ -20,13 +25,13 @@ using namespace papillon;
 class PFFmpegStreamHandler
 {
     public:
-        enum StreamTypeE
+        enum StreamType
         {
             E_STREAM_FILE,
             E_STREAM_NETWORK
         };
 
-        enum StreamDirectionE
+        enum StreamDirection
         {
             E_STREAM_INPUT,
             E_STREAM_OUTPUT
@@ -34,14 +39,14 @@ class PFFmpegStreamHandler
 
     public:
         PFFmpegStreamHandler()
-              : m_streamType      (E_STREAM_FILE)
-              , m_streamDirection (E_STREAM_INPUT)
+              : m_streamType      (StreamType::E_STREAM_FILE)
+              , m_streamDirection (StreamDirection::E_STREAM_INPUT)
               , m_codecID         (AV_CODEC_ID_NONE)
               , m_mutex           (true)
               , m_isOpen          (false)
         {
 #if FFMPEG_DEBUG
-            PLog::OpenConsoleLogger("console", PLog::E_LEVEL_TRACE);
+            PLog::OpenConsoleLogger(PLog::E_LEVEL_TRACE);
             av_log_set_level(AV_LOG_TRACE);
 #else
             av_log_set_level(AV_LOG_ERROR);
@@ -92,9 +97,9 @@ class PFFmpegStreamHandler
 
             // Grab stream type from given URI
             if (uri.IsFile())
-                m_streamType = E_STREAM_FILE;
+                m_streamType = StreamType::E_STREAM_FILE;
             else if (uri.IsNetwork())
-                m_streamType = E_STREAM_NETWORK;
+                m_streamType = StreamType::E_STREAM_NETWORK;
             else
                 return PResult::ErrorBadURIFormat(PString("URI should point to either a file or a network stream"));
 
@@ -147,7 +152,7 @@ class PFFmpegStreamHandler
          */
         bool IsStreaming()
         {
-            return m_streamType == PFFmpegStreamHandler::E_STREAM_NETWORK;
+            return m_streamType == PFFmpegStreamHandler::StreamType::E_STREAM_NETWORK;
         }
 
 
@@ -156,7 +161,7 @@ class PFFmpegStreamHandler
          */
         bool IsInputStream() const
         {
-            return m_streamDirection == PFFmpegStreamHandler::E_STREAM_INPUT;
+            return m_streamDirection == PFFmpegStreamHandler::StreamDirection::E_STREAM_INPUT;
         }
 
 
@@ -165,16 +170,16 @@ class PFFmpegStreamHandler
          */
         bool IsOutputStream() const
         {
-            return m_streamDirection == PFFmpegStreamHandler::E_STREAM_OUTPUT;
+            return m_streamDirection == PFFmpegStreamHandler::StreamDirection::E_STREAM_OUTPUT;
         }
 
     protected:
-        PFFmpegStreamHandler::StreamTypeE      m_streamType;
-        PFFmpegStreamHandler::StreamDirectionE m_streamDirection;
-        PUri                                   m_uri;
-        AVCodecID                              m_codecID;
-        mutable PMutex                         m_mutex;
-        bool                                   m_isOpen;
+        PFFmpegStreamHandler::StreamType      m_streamType;
+        PFFmpegStreamHandler::StreamDirection m_streamDirection;
+        PUri                                  m_uri;
+        AVCodecID                             m_codecID;
+        mutable PMutex                        m_mutex;
+        bool                                  m_isOpen;
 };
 
-#endif /* FFMPEG_PFFMPEGSTREAMHANDLER_H_ */
+#endif /* SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGSTREAMHANDLER_H_ */

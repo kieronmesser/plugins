@@ -1,15 +1,22 @@
 /*
  * Copyright (C) 2015 Digital Barriers plc. All rights reserved.
  * Contact: http://www.digitalbarriers.com/
+ *
+ * This file is part of the Papillon SDK.
+ *
+ * You can't use, modify or distribute any part of this file without
+ * the explicit written agreements of Digital Barriers plc.
  */
 
-#ifndef FFMPEG_PFFMPEGUTILITY_H_
-#define FFMPEG_PFFMPEGUTILITY_H_
+#ifndef SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGUTILITY_H_
+#define SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGUTILITY_H_
 
 #include <PResult.h>
 #include <PGuid.h>
 #include <PLog.h>
 using namespace papillon;
+
+#include <QtCore/qscopedpointer.h>
 
 // FFmpeg includes
 extern "C"
@@ -33,78 +40,6 @@ struct AVFrameDeleter
         av_frame_free(&frame);
     }
 };
-
-template <typename T, typename Cleanup >
-class MySimpleScopedPointer
-{
-public:
-    explicit inline MySimpleScopedPointer(T *p = 0) : d(p)
-    {
-    }
-
-    inline ~MySimpleScopedPointer()
-    {
-        T *oldD = this->d;
-        Cleanup::cleanup(oldD);
-    }
-
-    inline T &operator*() const
-    {
-        return *d;
-    }
-
-    inline T *operator->() const
-    {
-        return d;
-    }
-
-    inline bool operator!() const
-    {
-        return !d;
-    }
-
-    inline operator bool() const
-    {
-        return isNull() ? 0 : &MySimpleScopedPointer::d;
-    }
-
-    inline T *data() const
-    {
-        return d;
-    }
-
-    inline bool isNull() const
-    {
-        return !d;
-    }
-
-    inline void reset(T *other = 0)
-    {
-        if (d == other)
-            return;
-        T *oldD = d;
-        d = other;
-        Cleanup::cleanup(oldD);
-    }
-
-    inline T *take()
-    {
-        T *oldD = d;
-        d = 0;
-        return oldD;
-    }
-
-    inline void swap(MySimpleScopedPointer<T, Cleanup> &other)
-    {
-        qSwap(d, other.d);
-    }
-
-    typedef T *pointer;
-
-protected:
-    T *d;
-};
-
 
 /**
  * @file PFFmpegUtility.h
@@ -188,6 +123,11 @@ class FFmpegUtility
             int64_t timeStampToSeek = av_rescale(timeStampInSeconds,
                                                  formatContext->streams[videoStreamIndex]->time_base.den,
                                                  formatContext->streams[videoStreamIndex]->time_base.num);
+
+#if FFMPEG_DEBUG
+            P_LOG_DEBUG << "Requested timestamp to seek to is '" << timeStampInSeconds << "'";
+            P_LOG_DEBUG << "Same timestamp in 3rd-party decoder's time_base is '" << timeStampToSeek << "'";
+#endif
 
             int result = -1;
             if ((result = av_seek_frame(formatContext, videoStreamIndex, timeStampToSeek, AVSEEK_FLAG_ANY)) < 0)
@@ -328,4 +268,4 @@ class FFmpegUtility
         }
 };
 
-#endif /* FFMPEG_PFFMPEGUTILITY_H_ */
+#endif /* SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGUTILITY_H_ */

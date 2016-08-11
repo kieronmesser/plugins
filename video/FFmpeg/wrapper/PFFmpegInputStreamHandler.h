@@ -11,7 +11,7 @@
 #ifndef SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGINPUTSTREAMHANDLER_H_
 #define SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGINPUTSTREAMHANDLER_H_
 
-#include "PFFmpegStreamHandler.h"
+#include <PFFmpegStreamHandler.h>
 
 /**
  * @file PFFmpegInputStreamHandler.h
@@ -30,7 +30,7 @@ class PFFmpegInputStreamHandler : public PFFmpegStreamHandler
             , m_codec                (0)
             , m_videoStreamIndex     (0)
         {
-            m_streamDirection = PFFmpegStreamHandler::E_STREAM_INPUT;
+            m_streamDirection = PFFmpegStreamHandler::StreamDirection::E_STREAM_INPUT;
         }
 
 
@@ -53,10 +53,13 @@ class PFFmpegInputStreamHandler : public PFFmpegStreamHandler
         {
             PMutexLocker lock(&m_mutex);
 
+            // Status of some methods called
             int result = -1;
+            // Actual stream path, path without scheme for files, entire thing for network streams
+            PString streamPath((IsStreaming() ? m_uri.ToString() : m_uri.GetPath().ToString()));
 
-            // Open input video file
-            if ((result = avformat_open_input(&m_formatContext, m_uri.GetPath().c_str(), NULL, NULL)) < 0)
+            // Open input stream
+            if ((result = avformat_open_input(&m_formatContext, streamPath.c_str(), NULL, NULL)) < 0)
             {
                 return PResult::Error(PString("Cannot open input URI \"%1\": %2").Arg(m_uri.ToString()).Arg(FFmpegUtility::GetErrorString(result)));
             }
@@ -68,11 +71,12 @@ class PFFmpegInputStreamHandler : public PFFmpegStreamHandler
             }
 
 #if FFMPEG_DEBUG
-            av_dump_format(m_formatContext, 0, m_uri.GetPath().c_str(), 0);
+            av_dump_format(m_formatContext, 0, streamPath.c_str(), 0);
 #endif
 
             // Find the first video stream that is relevant with our configuration
             m_videoStreamIndex = av_find_best_stream(m_formatContext, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
+
             if (m_videoStreamIndex < 0)
             {
                 switch (m_videoStreamIndex)
@@ -84,7 +88,6 @@ class PFFmpegInputStreamHandler : public PFFmpegStreamHandler
                     default:
                         return PResult::Error("Cannot find a video stream");
                 }
-
             }
 
             // Get a pointer to the video stream
@@ -95,7 +98,7 @@ class PFFmpegInputStreamHandler : public PFFmpegStreamHandler
 
 
         /**
-         * Opens a stream's codec and writes the header to the stream.
+         * Opens the codec for this stream and writes the stream header.
          * @return PResult::C_OK on success, PResult::Error otherwise
          */
         PResult OpenStream()
@@ -122,15 +125,16 @@ class PFFmpegInputStreamHandler : public PFFmpegStreamHandler
 
             // Dump some information regarding the video stream
 #if FFMPEG_DEBUG
-	    FFmpegUtility::PrintDictionary(m_formatContext->metadata);
+            FFmpegUtility::PrintDictionary(m_formatContext->metadata);
             FFmpegUtility::PrintStreams(m_formatContext);
-#endif    
+#endif
+
             return PResult::C_OK;
         }
 
 
         /**
-         * Marks a stream as closed, resource release is handled in the destructor.
+         * Marks the stream as closed, resource release is handled in the destructor.
          * @return PResult::C_OK on success, PResult::Error otherwise
          */
         PResult CloseStream()
@@ -143,7 +147,7 @@ class PFFmpegInputStreamHandler : public PFFmpegStreamHandler
 
 
         /**
-         * Reads a PFrame from the stream.
+         * Returns a PFrame read from the stream.
          * @return PResult::C_OK on success, PResult::Error otherwise.
          */
         PResult ReadFrame(PFrame& frame)
@@ -226,8 +230,20 @@ class PFFmpegInputStreamHandler : public PFFmpegStreamHandler
 
         /**
          * @return Duration of the video stream in seconds.
+         * todo What if it's an RTSP stream?
+         * todo Make this floating point
          */
         int32 GetDuration() const
+        {
+            return FFmpegUtility::GetDuration(m_formatContext);
+        }
+
+
+        /**
+         * @return Total number of frames currently open stream has.
+         * todo What if it's an RTSP stream?
+         */
+        int32 GetFrameCount() const
         {
             return FFmpegUtility::GetDuration(m_formatContext) * FFmpegUtility::GetFPS(m_stream);
         }
@@ -270,12 +286,16 @@ class PFFmpegInputStreamHandler : public PFFmpegStreamHandler
 
 
         /**
-         * Seeks to the frame at given index.
+         * Seeks to the frame located at given index with respect to the beginning of the stream.
          * @param frameToSeek Frame index to seek to, converted to time-stamp by dividing it by FPS.
          * @return PResult::C_OK on success, PResult::Error otherwise.
          */
         PResult SeekToFrame(uint32 frameToSeek)
         {
+            // At this point the user might have already asked for some
+            // frames so reset the codec before seeking to the desired timestamp.
+            ReturnIfFailed(Reset());
+
             int64_t totalNumberOfFrames = GetFPS() * FFmpegUtility::GetDuration(m_formatContext);
 
             // Validate incoming frame number, it should not be beyond the end of video file
@@ -292,7 +312,9 @@ class PFFmpegInputStreamHandler : public PFFmpegStreamHandler
 
 
         /**
-         * Resets internal state of this stream, should be called after SeekToFrame().
+         * Resets internal state of this stream. It's called each time a seek operation is requested
+         * assuming that the user might have already read frames from the stream. It should also be called 
+         * after seek operations when reading frames from the beginning of the stream is desired.
          * @return PResult::C_OK on success, PResult::Error otherwise.
          */
         PResult Reset()

@@ -1,12 +1,17 @@
 /*
  * Copyright (C) 2015 Digital Barriers plc. All rights reserved.
  * Contact: http://www.digitalbarriers.com/
+ *
+ * This file is part of the Papillon SDK.
+ *
+ * You can't use, modify or distribute any part of this file without
+ * the explicit written agreements of Digital Barriers plc.
  */
 
-#ifndef FFMPEG_PFFMPEGOUTPUTSTREAMHANDLER_H_
-#define FFMPEG_PFFMPEGOUTPUTSTREAMHANDLER_H_
+#ifndef SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGOUTPUTSTREAMHANDLER_H_
+#define SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGOUTPUTSTREAMHANDLER_H_
 
-#include "PFFmpegStreamHandler.h"
+#include <PFFmpegStreamHandler.h>
 
 /**
  * @file PFFmpegOutputStreamHandler.h
@@ -26,7 +31,7 @@ class PFFmpegOutputStreamHandler : public PFFmpegStreamHandler
             , m_fps               (0)
             , m_gopLength         (12)
         {
-            m_streamDirection = PFFmpegStreamHandler::E_STREAM_OUTPUT;
+            m_streamDirection = PFFmpegStreamHandler::StreamDirection::E_STREAM_OUTPUT;
         }
 
 
@@ -299,8 +304,8 @@ class PFFmpegOutputStreamHandler : public PFFmpegStreamHandler
             // Allocate frames: source frame is the one that we copy data from incoming PImage's
             // internal buffer. This frame is fed into sws_scale() and its output is stored in
             // scaled frame. None of these two are the final encoded frame yet.
-            MySimpleScopedPointer<AVFrame, AVFrameDeleter> sourceFrame(av_frame_alloc());
-            MySimpleScopedPointer<AVFrame, AVFrameDeleter> scaledFrame(av_frame_alloc());
+            QScopedPointer<AVFrame, AVFrameDeleter> sourceFrame(av_frame_alloc());
+            QScopedPointer<AVFrame, AVFrameDeleter> scaledFrame(av_frame_alloc());
 
             if (!sourceFrame || !scaledFrame)
             {
@@ -546,4 +551,4 @@ class PFFmpegOutputStreamHandler : public PFFmpegStreamHandler
         int32               m_gopLength;         // Can be 0 to INT_MAX
 };
 
-#endif /* FFMPEG_PFFMPEGOUTPUTSTREAMHANDLER_H_ */
+#endif /* SDK_SRC_PLUGINS_WRAPPERS_FFMPEG_PFFMPEGOUTPUTSTREAMHANDLER_H_ */
